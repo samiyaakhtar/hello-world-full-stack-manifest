@@ -1,0 +1,52 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: backend-master
+spec:
+  routes:
+    - kind: Rule
+      match: 'PathPrefix(`/backend`) && Headers(`Ring`, `master`)'
+      middlewares:
+        - name: backend-master
+      services:
+        - name: backend-master
+          port: 80
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: backend
+spec:
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/backend`)
+      middlewares:
+        - name: backend
+      services:
+        - name: backend-master
+          port: 80
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: backend-master
+spec:
+  stripPrefix:
+    forceSlash: false
+    prefixes:
+      - /backend
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: backend
+spec:
+  stripPrefix:
+    forceSlash: false
+    prefixes:
+      - /backend
+

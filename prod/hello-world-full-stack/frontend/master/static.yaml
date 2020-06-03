@@ -1,0 +1,52 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frontend-master
+spec:
+  routes:
+    - kind: Rule
+      match: 'PathPrefix(`/frontend`) && Headers(`Ring`, `master`)'
+      middlewares:
+        - name: frontend-master
+      services:
+        - name: frontend-master
+          port: 80
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frontend
+spec:
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/frontend`)
+      middlewares:
+        - name: frontend
+      services:
+        - name: frontend-master
+          port: 80
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: frontend-master
+spec:
+  stripPrefix:
+    forceSlash: false
+    prefixes:
+      - /frontend
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: frontend
+spec:
+  stripPrefix:
+    forceSlash: false
+    prefixes:
+      - /frontend
+
