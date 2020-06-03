@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: hellobedrock.acme.backend-app
-          image: hellorings.azurecr.io/samiyaakhtar/hello-world-full-stack-backend:master-20200603.13
+          image: hellorings.azurecr.io/samiyaakhtar/hello-world-full-stack-backend:master-20200603.12
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
