@@ -3,12 +3,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hellobedrock.acme.frontend-app
+  name: hellobedrock.acme.backend-app
 spec:
   replicas: 
   selector:
     matchLabels:
-      app.kubernetes.io/name: hellobedrock.acme.frontend-app
+      app.kubernetes.io/name: hellobedrock.acme.backend-app
       app.kubernetes.io/instance: chart
   minReadySeconds: 
   strategy:
@@ -19,16 +19,16 @@ spec:
   template:
     metadata:
       labels:
-        app: hellobedrock.acme.frontend-app
-        app.kubernetes.io/name: hellobedrock.acme.frontend-app
+        app: hellobedrock.acme.backend-app
+        app.kubernetes.io/name: hellobedrock.acme.backend-app
         app.kubernetes.io/instance: chart
       annotations:
         prometheus.io/port: 8080
         prometheus.io/scrape: true
     spec:
       containers:
-        - name: hellobedrock.acme.frontend-app
-          image: hellorings.azurecr.io/samiyaakhtar/hello-world-full-stack-backend:master-20200603.8
+        - name: hellobedrock.acme.backend-app
+          image: hellorings.azurecr.io/hellobedrock.acme.backend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -37,15 +37,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hellobedrock.acme.frontend-app
+  name: hellobedrock.acme.backend-app
   labels:
-    app: hellobedrock.acme.frontend-app
+    app: hellobedrock.acme.backend-app
 spec:
   type: LoadBalancer
   ports:
     - port: 8080
       name: http
   selector:
-    app: hellobedrock.acme.frontend-app
+    app: hellobedrock.acme.backend-app
 
 
