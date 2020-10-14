@@ -1,51 +1,47 @@
 ---
 
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hellobedrock.acme.backend-app
+  name: backend-master
 spec:
-  replicas: 
   selector:
     matchLabels:
-      app.kubernetes.io/name: hellobedrock.acme.backend-app
-      app.kubernetes.io/instance: chart
-  minReadySeconds: 
-  strategy:
-    type: RollingUpdate # describe how we do rolling updates
-    rollingUpdate:
-      maxUnavailable: 1 # When updating take one pod down at a time
-      maxSurge: 1 # When updating never have more than one extra pod. If replicas = 2 then never 3 pods when updating
+      app: backend-master
+      tier: backend
+      track: stable
+  replicas: 
   template:
     metadata:
       labels:
-        app: hellobedrock.acme.backend-app
-        app.kubernetes.io/name: hellobedrock.acme.backend-app
-        app.kubernetes.io/instance: chart
-      annotations:
-        prometheus.io/port: 8080
-        prometheus.io/scrape: true
+        app: backend-master
+        tier: backend
+        track: stable
     spec:
       containers:
-        - name: hellobedrock.acme.backend-app
+        - name: backend-master
           image: hellorings.azurecr.io/samiyaakhtar/hello-world-full-stack-backend:master-20200603.16
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 9000
 ---
+
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: hellobedrock.acme.backend-app
+  name: backend-master
   labels:
-    app: hellobedrock.acme.backend-app
+    app: backend-master
 spec:
   type: LoadBalancer
   ports:
-    - port: 8080
+    - port: 80
       name: http
+      targetPort: 9000
   selector:
-    app: hellobedrock.acme.backend-app
+    app: backend-master
 
 
